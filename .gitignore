@@ -1,0 +1,44 @@
+# Ignore SFDX specific files
+.sfdx/
+.sfdx-tools/
+
+# Ignore local IDE and editor settings
+.vscode/
+.idea/
+*.log
+*.tmp
+
+# Ignore NPM dependencies (if using Node.js for automation)
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Ignore MacOS and system files
+.DS_Store
+Thumbs.db
+
+# Ignore SFDX Auth files (DO NOT COMMIT authentication details)
+**/auth*
+**/session.json
+**/orgs/*
+
+# Ignore package and metadata deployments
+*.zip
+*.jar
+*.bak
+
+# Ignore coverage reports and test results
+coverage/
+test-result-*
+
+# Ignore temporary and scratch org config files
+config/*.json
+
+# Ignore Salesforce scratch org metadata and temporary files
+**/.sfdx
+**/.sf
+**/tmp/
+
+# Ignore force-app/main/default/lwc auto-generated files
+**/__tests__/
+**/__snapshots__/
