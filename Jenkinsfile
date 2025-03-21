@@ -11,20 +11,20 @@ node {
     def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
     def CONNECTED_APP_CONSUMER_KEY = env.CONNECTED_APP_CONSUMER_KEY_DH
 
-    println "Starting Jenkins Pipeline..."
-    println "SFDX Path: ${SFDX_CLI}"
-    println "Salesforce Username: ${SFDC_USERNAME}"
-    println "Salesforce Instance URL: ${SFDC_HOST}"
+    println "🚀 Starting Jenkins Pipeline..."
+    println "🔹 SFDX Path: ${SFDX_CLI}"
+    println "🔹 Salesforce Username: ${SFDC_USERNAME}"
+    println "🔹 Salesforce Instance URL: ${SFDC_HOST}"
 
     stage('Checkout Source') {
-        println "Checking out source code..."
+        println "🔄 Checking out source code..."
         checkout scm
-        println "Source code checkout complete."
+        println "✅ Source code checkout complete."
     }
 
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
         stage('Authenticate Salesforce') {
-            println "Authenticating with Salesforce..."
+            println "🔐 Authenticating with Salesforce..."
             def rc = bat returnStatus: true, script: """
                 "${SFDX_CLI}" auth jwt grant ^
                 --client-id ${CONNECTED_APP_CONSUMER_KEY} ^
@@ -34,24 +34,36 @@ node {
                 --instance-url ${SFDC_HOST}
             """
             if (rc != 0) { 
-                println "ERROR: Salesforce authentication failed!"
+                println "❌ ERROR: Salesforce authentication failed!"
                 error 'Salesforce authentication failed'
             }
-            println "Salesforce authentication successful."
+            println "✅ Salesforce authentication successful."
+        }
+
+        stage('Convert Source Format') {
+            println "🔄 Converting source format for deployment..."
+            def convertStatus = bat returnStatus: true, script: """
+                "${SFDX_CLI}" project convert source --output-dir deploy/
+            """
+            if (convertStatus != 0) { 
+                println "❌ ERROR: Source conversion failed!"
+                error 'Source conversion failed'
+            }
+            println "✅ Source conversion successful."
         }
 
         stage('Deploy Code') {
-            println "Starting deployment to Salesforce..."
+            println "🚀 Starting deployment to Salesforce..."
             def deployStatus = bat returnStatus: true, script: """
-                "${SFDX_CLI}" project deploy start --metadata-dir manifest/. --target-org ${SFDC_USERNAME}
+                "${SFDX_CLI}" project deploy start --metadata-dir deploy/ --target-org ${SFDC_USERNAME}
             """
             if (deployStatus != 0) { 
-                println "ERROR: Salesforce deployment failed!"
+                println "❌ ERROR: Salesforce deployment failed!"
                 error 'Salesforce deployment failed'
             }
-            println "Salesforce deployment successful."
+            println "✅ Salesforce deployment successful."
         }
     }
 
-    println "Jenkins Pipeline execution completed successfully."
+    println "🎉 Jenkins Pipeline execution completed successfully!"
 }
