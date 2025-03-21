@@ -26,7 +26,7 @@ node {
         stage('Authenticate Salesforce') {
             println "Authenticating with Salesforce..."
             def rc = bat returnStatus: true, script: """
-                "${SFDX_CLI}" force:auth:jwt:grant ^
+                "${SFDX_CLI}" auth jwt grant ^
                 --client-id ${CONNECTED_APP_CONSUMER_KEY} ^
                 --jwt-key-file "${jwt_key_file}" ^
                 --username ${SFDC_USERNAME} ^
@@ -43,7 +43,7 @@ node {
         stage('Deploy Code') {
             println "Starting deployment to Salesforce..."
             def deployStatus = bat returnStatus: true, script: """
-                "${SFDX_CLI}" force:mdapi:deploy -d manifest/. -u ${SFDC_USERNAME}
+                "${SFDX_CLI}" project deploy start --metadata-dir manifest/. --target-org ${SFDC_USERNAME}
             """
             if (deployStatus != 0) { 
                 println "ERROR: Salesforce deployment failed!"
