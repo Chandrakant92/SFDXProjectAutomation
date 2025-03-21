@@ -16,4 +16,9 @@ public with sharing class ContactController {
         return [SELECT Id, Name, Title, Phone, Email FROM Contact LIMIT 1];
     }
 
+   
+    public static void getUser(){
+       System.debug('Chandrakant J. Gawali');
+    }
+
 }
