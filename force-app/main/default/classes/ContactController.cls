@@ -18,7 +18,7 @@ public with sharing class ContactController {
 
    
     public static void getUser(){
-       System.debug('Hey...!, Chandrakant');
+       System.debug('Hey!, Chandrakant');
     }
 
 }
